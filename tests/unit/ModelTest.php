@@ -70,8 +70,9 @@ class ModelTest extends TestCase
             'voltage'         => 1.1,
             'electricCurrent' => 2.2,
         ], $table2);
-
         DeviceLogModel::batchInsert($records);
+
+        $this->assertTrue(true);
     }
 
     private function assertTableExists(string $tableName): void

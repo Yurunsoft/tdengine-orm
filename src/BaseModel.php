@@ -181,8 +181,6 @@ abstract class BaseModel implements \JsonSerializable
             }
         }
 
-        var_dump($sql);
-
         return TDEngineManager::getClient(self::__getMeta()->getTable()->client ?? null)->sql($sql);
     }
 
