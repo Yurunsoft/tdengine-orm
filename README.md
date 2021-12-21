@@ -2,16 +2,16 @@
 
 [![Latest Version](https://poser.pugx.org/yurunsoft/tdengine-orm/v/stable)](https://packagist.org/packages/yurunsoft/tdengine-orm)
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/Yurunsoft/tdengine-orm/ci/dev)
-[![Php Version](https://img.shields.io/badge/php-%3E=7.0-brightgreen.svg)](https://secure.php.net/)
+[![Php Version](https://img.shields.io/badge/php-%3E=7.1-brightgreen.svg)](https://secure.php.net/)
 [![License](https://img.shields.io/github/license/Yurunsoft/tdengine-orm.svg)](https://github.com/Yurunsoft/tdengine-orm/blob/master/LICENSE)
 
 ## 简介
 
-基于 [tdengine-restful-connector](https://github.com/Yurunsoft/tdengine-restful-connector) 开发的 TDEngine ORM。
+基于 [tdengine-restful-connector](https://github.com/Yurunsoft/tdengine-restful-connector)、[php-tdengine](https://github.com/Yurunsoft/php-tdengine) 开发的 TDEngine ORM。
 
 支持创建超级表、创建表、批量插入数据。
 
-此项目支持在 PHP >= 7.0 的项目中使用。
+此项目支持在 PHP >= 7.1 的项目中使用。
 
 支持在 ThinkPHP、Laravel、[Swoole](https://github.com/swoole/swoole-src)、[imi](https://github.com/imiphp/imi) 等项目中使用
 
@@ -43,6 +43,11 @@
 \Yurun\TDEngine\TDEngineManager::setDefaultClientName('test');
 // 获取客户端对象（\Yurun\TDEngine\Client）
 $client = \Yurun\TDEngine\TDEngineManager::getClient();
+// 不设置连接驱动时，会判断安装扩展优先使用扩展
+// 设置连接驱动为 RESTful
+\Yurun\TDEngine\Orm\TDEngineOrm::setClientHandler(new \Yurun\TDEngine\Orm\ClientHandler\Restful\Handler());
+// 设置连接驱动为 PHP 扩展
+\Yurun\TDEngine\Orm\TDEngineOrm::setClientHandler(new \Yurun\TDEngine\Orm\ClientHandler\Extension\Handler());
 ```
 
 **定义模型：**
