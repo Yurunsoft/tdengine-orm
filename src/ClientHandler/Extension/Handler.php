@@ -29,6 +29,7 @@ class Handler implements IClientHandler
 
     private function getConnection(?string $clientName = null): Connection
     {
+        // @phpstan-ignore-next-line
         if (!($this->haveSwoole && Coroutine::getCid() >= 0) && $this->connection)
         {
             return $this->connection;

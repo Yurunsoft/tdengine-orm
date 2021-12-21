@@ -4,13 +4,13 @@ on: [push, pull_request]
 
 jobs:
   test:
-    name: PHP-${{ matrix.php }} TDengine-${{ matrix.tdengine }} Swoole-${{ matrix.swoole }}
+    name: PHP-${{ matrix.php }} TDengine-${{ matrix.tdengine }}
     runs-on: ubuntu-20.04
 
     strategy:
       fail-fast: false
       matrix:
-        php: [7.0, 7.1, 7.2, 7.3]
+        php: [7.1, 7.2, 7.3]
         tdengine: ['2.3.6.0']
 
     env:
