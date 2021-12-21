@@ -9,8 +9,9 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="InfluxDBORM">
+        <testsuite name="test">
             <file>unit/ModelTest.php</file>
+            <file>unit/ExtensionModelTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

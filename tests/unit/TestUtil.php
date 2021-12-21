@@ -22,7 +22,19 @@ class TestUtil
             'user'            => getenv('TDENGINE_USER') ?: 'root',
             'password'        => getenv('TDENGINE_PASSWORD') ?: 'taosdata',
             'ssl'             => getenv('TDENGINE_SSL') ?: false,
-            'timestampFormat' => getenv('TDENGINE_TIMESTAMP_FORMAT') ?: TimeStampFormat::LOCAL_STRING,
+            'timestampFormat' => getenv('TDENGINE_TIMESTAMP_FORMAT') ?: TimeStampFormat::TIMESTAMP,
+        ]);
+    }
+
+    public static function getExtensionClientConfig(): ClientConfig
+    {
+        return new ClientConfig([
+            'host'            => getenv('TDENGINE_HOST') ?: '127.0.0.1',
+            'hostName'        => getenv('TDENGINE_HOST_NAME') ?: '',
+            'port'            => getenv('TDENGINE_PORT') ?: 6030,
+            'user'            => getenv('TDENGINE_USER') ?: 'root',
+            'password'        => getenv('TDENGINE_PASSWORD') ?: 'taosdata',
+            'timestampFormat' => getenv('TDENGINE_TIMESTAMP_FORMAT') ?: TimeStampFormat::TIMESTAMP,
         ]);
     }
 }
