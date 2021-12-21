@@ -10,20 +10,24 @@ jobs:
       fail-fast: false
       matrix:
         php: ['8.0']
-        tdengine: [2.0.22.0]
 
     env:
-      PHP_DOCKER_VERSION: ${{ matrix.php }}
       TDENGINE_VERSION: ${{ matrix.tdengine }}
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: prepare
-        run: |
-          cd .github
-          docker-compose up -d php
-          docker exec php composer update
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: pecl
+          extensions: >
+            :xdebug
+            mbstring, json, sockets
+
+      - name: Prepare
+        run: composer update
 
       - name: Test
-        run: docker exec php ./vendor/bin/php-cs-fixer fix --dry-run --diff
+        run: php ./vendor/bin/php-cs-fixer fix --dry-run --diff
