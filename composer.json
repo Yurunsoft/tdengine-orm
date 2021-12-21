@@ -10,7 +10,9 @@
     "require-dev": {
         "phpunit/phpunit": ">=7",
         "friendsofphp/php-cs-fixer": "^3.0.2",
-        "phpstan/phpstan": "^1.0.2"
+        "phpstan/phpstan": "^1.0.2",
+        "yurunsoft/ide-helper": "~1.0",
+        "swoole/ide-helper": "~4.8"
     },
     "autoload": {
         "psr-4": {
@@ -24,5 +26,12 @@
     },
     "scripts": {
         "test": "./vendor/bin/phpunit -c ./tests/phpunit.xml"
+    },
+    "extra": {
+        "ide-helper": {
+            "list": [
+                "tdengine"
+            ]
+        }
     }
 }

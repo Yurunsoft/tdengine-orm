@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Yurun\TDEngine\Orm;
 
-use Yurun\TDEngine\Action\Sql\SqlResult;
 use Yurun\TDEngine\Orm\Annotation\Tag;
+use Yurun\TDEngine\Orm\Contract\IQueryResult;
 use Yurun\TDEngine\Orm\Enum\DataType;
 use Yurun\TDEngine\Orm\Meta\Meta;
 use Yurun\TDEngine\Orm\Meta\MetaManager;
-use Yurun\TDEngine\TDEngineManager;
 
 /**
- * InfluxDB Model 基类.
+ * Model 基类.
  */
 abstract class BaseModel implements \JsonSerializable
 {
@@ -47,12 +46,12 @@ abstract class BaseModel implements \JsonSerializable
         $this->__table = $table;
     }
 
-    public function insert(): SqlResult
+    public function insert(): IQueryResult
     {
         return self::batchInsert([$this]);
     }
 
-    public static function createSuperTable(bool $ifNotExists = true): SqlResult
+    public static function createSuperTable(bool $ifNotExists = true): IQueryResult
     {
         $meta = self::__getMeta();
         $tableAnnotation = $meta->getTable();
@@ -75,10 +74,10 @@ abstract class BaseModel implements \JsonSerializable
         }
         $sql .= ' TAGS (' . implode(',', $fields) . ')';
 
-        return TDEngineManager::getClient($tableAnnotation->client ?? null)->sql($sql);
+        return TDEngineOrm::getClientHandler()->query($sql, $tableAnnotation->client ?? null);
     }
 
-    public static function createTable(string $tableName, array $tags = [], bool $ifNotExists = true): SqlResult
+    public static function createTable(string $tableName, array $tags = [], bool $ifNotExists = true): IQueryResult
     {
         $meta = self::__getMeta();
         $tableAnnotation = $meta->getTable();
@@ -138,13 +137,13 @@ abstract class BaseModel implements \JsonSerializable
             }
         }
 
-        return TDEngineManager::getClient($tableAnnotation->client ?? null)->sql($sql);
+        return TDEngineOrm::getClientHandler()->query($sql, $tableAnnotation->client ?? null);
     }
 
     /**
      * @param static[] $models
      */
-    public static function batchInsert(array $models): SqlResult
+    public static function batchInsert(array $models): IQueryResult
     {
         $sql = 'INSERT INTO ';
         foreach ($models as $model)
@@ -181,7 +180,7 @@ abstract class BaseModel implements \JsonSerializable
             }
         }
 
-        return TDEngineManager::getClient(self::__getMeta()->getTable()->client ?? null)->sql($sql);
+        return TDEngineOrm::getClientHandler()->query($sql, self::__getMeta()->getTable()->client ?? null);
     }
 
     /**

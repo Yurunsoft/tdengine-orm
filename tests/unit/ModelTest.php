@@ -5,11 +5,19 @@ declare(strict_types=1);
 namespace Yurun\TDEngine\Orm\Test;
 
 use PHPUnit\Framework\TestCase;
+use Yurun\TDEngine\Orm\ClientHandler\Restful\Handler;
+use Yurun\TDEngine\Orm\TDEngineOrm;
 use Yurun\TDEngine\Orm\Test\Model\DeviceLogModel;
 use Yurun\TDEngine\TDEngineManager;
 
 class ModelTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        TDEngineManager::setDefaultClientName('test');
+        TDEngineOrm::setClientHandler(new Handler());
+    }
+
     public function testCreateSuperTable(): void
     {
         DeviceLogModel::createSuperTable();
@@ -18,7 +26,7 @@ class ModelTest extends TestCase
 
     public function testCreateTable(): void
     {
-        $client = TDEngineManager::getClient();
+        $client = TDEngineManager::getClient('test');
 
         $table = 'device_' . md5(uniqid('', true));
         $deviceId = md5(uniqid('', true));
@@ -43,12 +51,21 @@ class ModelTest extends TestCase
     {
         $table = 'device_insert';
         $record = new DeviceLogModel([], $table);
-        $record->time = (int) (microtime(true) * 1000);
+        $record->time = $time = (int) (microtime(true) * 1000);
         $record->deviceId = '00000001';
         $record->voltage = 1.23;
         $record->electricCurrent = 4.56;
         $record->insert();
-        $this->assertTrue(true);
+
+        $client = TDEngineManager::getClient('test');
+        $result = $client->sql('select * from device.device_insert order by time desc limit 1');
+        $this->assertEquals([
+            [
+                'time'             => $time,
+                'voltage'          => 1.23,
+                'electric_current' => 4.56,
+            ],
+        ], $result->getData());
     }
 
     public function testBatchInsert(): void
@@ -56,7 +73,7 @@ class ModelTest extends TestCase
         $table1 = 'device_batch_insert_1';
         $records = [];
         $record = new DeviceLogModel([], $table1);
-        $record->time = (int) (microtime(true) * 1000);
+        $record->time = $time1 = (int) (microtime(true) * 1000);
         $record->deviceId = '00000001';
         $record->voltage = 1.23;
         $record->electricCurrent = 4.56;
@@ -64,20 +81,39 @@ class ModelTest extends TestCase
 
         usleep(1000);
         $table2 = 'device_batch_insert_2';
+        $time2 = (int) (microtime(true) * 1000);
         $records[] = new DeviceLogModel([
-            'time'            => (int) (microtime(true) * 1000),
+            'time'            => $time2,
             'deviceId'        => '00000002',
             'voltage'         => 1.1,
             'electricCurrent' => 2.2,
         ], $table2);
         DeviceLogModel::batchInsert($records);
 
+        $client = TDEngineManager::getClient('test');
+        $result = $client->sql('select * from device.device_batch_insert_1 order by time desc limit 1');
+        $this->assertEquals([
+            [
+                'time'             => $time1,
+                'voltage'          => 1.23,
+                'electric_current' => 4.56,
+            ],
+        ], $result->getData());
+        $result = $client->sql('select * from device.device_batch_insert_2 order by time desc limit 1');
+        $this->assertEquals([
+            [
+                'time'             => $time2,
+                'voltage'          => 1.1,
+                'electric_current' => 2.2,
+            ],
+        ], $result->getData());
+
         $this->assertTrue(true);
     }
 
     private function assertTableExists(string $tableName): void
     {
-        $result = TDEngineManager::getClient()->sql('show device.tables');
+        $result = TDEngineManager::getClient('test')->sql('show device.tables');
         foreach ($result->getData() as $row)
         {
             if ($tableName === $row['table_name'])
