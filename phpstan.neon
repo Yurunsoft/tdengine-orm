@@ -20,3 +20,4 @@ parameters:
 
     ignoreErrors:
         - '#left side of \?\? is not nullable#'
+        - '# TDengine\\#'

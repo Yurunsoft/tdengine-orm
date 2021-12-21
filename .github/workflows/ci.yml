@@ -3,44 +3,84 @@ name: ci
 on: [push, pull_request]
 
 jobs:
-  test-php:
-    name: PHP ${{ matrix.php }} TDEngine ${{ matrix.tdengine }}
+  test:
+    name: PHP-${{ matrix.php }} TDengine-${{ matrix.tdengine }}
     runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [7.1, 7.2, 7.3, 7.4, '8.0', 8.1]
-        tdengine: [2.0.22.0]
-    env:
-      PHP_DOCKER_VERSION: ${{ matrix.php }}
-      TDENGINE_VERSION: ${{ matrix.tdengine }}
-    steps:
-      - uses: actions/checkout@v2
-      - name: prepare
-        run: |
-          cd .github
-          docker-compose up -d
-          docker exec php composer update
-      - name: test
-        run: docker exec php composer test
 
-  test-tdengine:
-    name: PHP ${{ matrix.php }} TDEngine ${{ matrix.tdengine }}
-    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
-        php: [8.1]
-        tdengine: [2.2.2.0]
+        php: [7.1, 7.2, 7.3]
+        tdengine: ['2.3.6.0']
+
     env:
-      PHP_DOCKER_VERSION: ${{ matrix.php }}
       TDENGINE_VERSION: ${{ matrix.tdengine }}
+
     steps:
       - uses: actions/checkout@v2
-      - name: prepare
-        run: |
-          cd .github
-          docker-compose up -d
-          docker exec php composer update
-      - name: test
-        run: docker exec php composer test
+
+      - name: Build TDengine
+        run: sudo -E bash .github/script/build-tdengine.sh
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: pecl
+          extensions: >
+            :xdebug
+            mbstring, json, sockets
+
+      - name: Prepare
+        run: composer update
+
+      - name: Test
+        run: composer test
+
+  test-extension:
+    name: PHP-${{ matrix.php }} TDengine-${{ matrix.tdengine }} Swoole-${{ matrix.swoole }}
+    runs-on: ubuntu-20.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [7.4, '8.0', 8.1]
+        swoole: ['4.8.4']
+        tdengine: ['2.3.6.0']
+        tdengine-extension: [0.0.1]
+
+    env:
+      TDENGINE_VERSION: ${{ matrix.tdengine }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build TDengine
+        run: sudo -E bash .github/script/build-tdengine.sh
+
+      - name: Get Openssl Dir
+        id: opecssl-dir
+        run: echo "::set-output name=path::$(brew --prefix openssl@1.1)"
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: pecl
+          extensions: >
+            :xdebug
+            openssl, mbstring, json, sockets,
+            swoole-swoole/swoole-src@v${{ matrix.swoole }},
+            Yurunsoft/php-tdengine@v${{ matrix.tdengine-extension }},
+        env:
+          SWOOLE_CONFIGURE_OPTS: >
+            --enable-openssl
+            --with-openssl-dir=${{ steps.opecssl-dir.outputs.path }}
+          TDENGINE_CONFIGURE_OPTS: >
+            --enable-swoole
+
+      - name: Prepare
+        run: composer update
+
+      - name: Test
+        run: composer test
