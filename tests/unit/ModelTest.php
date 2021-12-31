@@ -81,9 +81,10 @@ class ModelTest extends TestCase
 
         usleep(1000);
         $table2 = 'device_batch_insert_2';
-        $time2 = (int) (microtime(true) * 1000);
+        $time = microtime(true);
+        $time2 = (int) ($time * 1000);
         $records[] = new DeviceLogModel([
-            'time'            => $time2,
+            'time'            => date('Y-m-d H:i:s.', (int) $time) . substr((string) $time2, -3, 3),
             'deviceId'        => '00000002',
             'voltage'         => 1.1,
             'electricCurrent' => 2.2,

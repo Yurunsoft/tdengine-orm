@@ -180,6 +180,8 @@ abstract class BaseModel implements \JsonSerializable
             }
         }
 
+        var_dump($sql);
+
         return TDEngineOrm::getClientHandler()->query($sql, self::__getMeta()->getTable()->client ?? null);
     }
 
@@ -291,6 +293,12 @@ abstract class BaseModel implements \JsonSerializable
         }
         switch ($type)
         {
+            case DataType::TIMESTAMP:
+                if (!\is_string($value))
+                {
+                    break;
+                }
+                // no break
             case DataType::BINARY:
             case DataType::NCHAR:
                 return '\'' . strtr($value, [
