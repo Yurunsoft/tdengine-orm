@@ -30,7 +30,7 @@ class TDEngineOrm
         }
         else
         {
-            if (class_exists(\TDengine\Connection::class))
+            if (class_exists(\TDengine\Connection::class, false))
             {
                 return self::$clientHandler = new \Yurun\TDEngine\Orm\ClientHandler\Extension\Handler();
             }
