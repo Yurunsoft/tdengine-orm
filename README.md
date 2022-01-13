@@ -1,7 +1,7 @@
 # tdengine-orm
 
 [![Latest Version](https://poser.pugx.org/yurunsoft/tdengine-orm/v/stable)](https://packagist.org/packages/yurunsoft/tdengine-orm)
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/Yurunsoft/tdengine-orm/ci/dev)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/Yurunsoft/tdengine-orm/ci/master)
 [![Php Version](https://img.shields.io/badge/php-%3E=7.1-brightgreen.svg)](https://secure.php.net/)
 [![License](https://img.shields.io/github/license/Yurunsoft/tdengine-orm.svg)](https://github.com/Yurunsoft/tdengine-orm/blob/master/LICENSE)
 
