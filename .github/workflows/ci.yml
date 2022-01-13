@@ -71,7 +71,7 @@ jobs:
             :xdebug
             openssl, mbstring, json, sockets,
             swoole-swoole/swoole-src@v${{ matrix.swoole }},
-            Yurunsoft/php-tdengine@v${{ matrix.tdengine-extension }},
+            tdengine-https://github.com/Yurunsoft/php-tdengine@v${{ matrix.tdengine-extension }},
         env:
           SWOOLE_CONFIGURE_OPTS: >
             --enable-openssl
