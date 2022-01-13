@@ -84,7 +84,7 @@ class ModelTest extends TestCase
         $time = microtime(true);
         $time2 = (int) ($time * 1000);
         $records[] = new DeviceLogModel([
-            'time'            => date('Y-m-d H:i:s.', (int) $time) . substr((string) $time2, -3, 3),
+            'time'            => gmdate('Y-m-d\TH:i:s.', (int) $time) . substr((string) $time2, -3, 3) . 'Z',
             'deviceId'        => '00000002',
             'voltage'         => 1.1,
             'electricCurrent' => 2.2,

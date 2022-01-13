@@ -152,11 +152,11 @@ abstract class BaseModel implements \JsonSerializable
             $tableAnnotation = $meta->getTable();
             if ($tableAnnotation->super)
             {
-                if (null === $model->__table)
+                if (null === ($table = $model->__getTable()))
                 {
                     throw new \RuntimeException('Table name cannot be null');
                 }
-                $sql .= $tableAnnotation->database . '.' . $model->__table . ' using ' . $tableAnnotation->database . '.' . $tableAnnotation->name;
+                $sql .= $tableAnnotation->database . '.' . $table . ' using ' . $tableAnnotation->database . '.' . $tableAnnotation->name;
                 $tags = $tagValues = [];
                 foreach ($meta->getTags() as $propertyName => $tagAnnotation)
                 {
