@@ -13,7 +13,7 @@ class Table
     /**
      * 客户端名称.
      *
-     * @var string|null
+     * @var string
      */
     public $client;
 
