@@ -6,6 +6,7 @@ namespace Yurun\TDEngine\Orm\Annotation;
 
 /**
  * @Annotation
+ *
  * @Target("PROPERTY")
  */
 class Tag

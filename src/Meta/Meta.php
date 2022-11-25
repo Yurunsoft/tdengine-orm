@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yurun\TDEngine\Orm\Meta;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use ReflectionClass;
 use Yurun\TDEngine\Orm\Annotation\Field;
 use Yurun\TDEngine\Orm\Annotation\Table;
 use Yurun\TDEngine\Orm\Annotation\Tag;
@@ -58,7 +57,7 @@ class Meta
         {
             self::$reader = new AnnotationReader();
         }
-        $refClass = new ReflectionClass($className);
+        $refClass = new \ReflectionClass($className);
         /** @var Table|null $table */
         $table = self::$reader->getClassAnnotation($refClass, Table::class);
         if (!$table)
