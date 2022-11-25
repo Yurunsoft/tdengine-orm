@@ -1,8 +1,6 @@
 #!/bin/bash
 cd /tmp && \
-wget https://github.com/taosdata/TDengine/archive/refs/tags/ver-${TDENGINE_VERSION}.tar.gz -O tdengine.tar.gz && \
-mkdir -p tdengine && \
-tar -xf tdengine.tar.gz -C tdengine --strip-components=1 && \
-cd tdengine && \
-mkdir release && cd release && cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build . && make install && \
+git clone --recurse -b ver-${TDENGINE_VERSION} --depth=1 https://github.com/taosdata/TDengine.git && \
+cd TDengine && \
+mkdir debug && cd debug && cmake .. -DBUILD_JDBC=false -DBUILD_TOOLS=false && make -j && make install && \
 systemctl start taosd
