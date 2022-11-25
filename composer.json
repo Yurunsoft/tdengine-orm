@@ -2,7 +2,7 @@
     "name": "yurunsoft/tdengine-orm",
     "license": "MIT",
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.1",
         "yurunsoft/tdengine-restful-connector": "^1.0",
         "doctrine/annotations": "^1.13",
         "symfony/polyfill-php81": "*"
@@ -32,6 +32,11 @@
             "list": [
                 "tdengine"
             ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "yurunsoft/ide-helper": true
         }
     }
 }

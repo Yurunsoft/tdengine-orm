@@ -59,13 +59,23 @@ class ModelTest extends TestCase
 
         $client = TDEngineManager::getClient('test');
         $result = $client->sql('select * from device.device_insert order by time desc limit 1');
-        $this->assertEquals([
+        if ([
             [
                 'time'             => $time,
                 'voltage'          => 1.23,
                 'electric_current' => 4.56,
             ],
-        ], $result->getData());
+        ] !== $result->getData() && [
+            [
+                'ts'               => gmdate('Y-m-d\TH:i:s', (int) ($time / 1000)) . 'Z',
+                'voltage'          => 1.23,
+                'electric_current' => 4.56,
+            ],
+        ] !== $result->getData())
+        {
+            var_dump($result->getData());
+            $this->assertTrue(false);
+        }
     }
 
     public function testBatchInsert(): void
@@ -93,21 +103,41 @@ class ModelTest extends TestCase
 
         $client = TDEngineManager::getClient('test');
         $result = $client->sql('select * from device.device_batch_insert_1 order by time desc limit 1');
-        $this->assertEquals([
+        if ([
             [
                 'time'             => $time1,
                 'voltage'          => 1.23,
                 'electric_current' => 4.56,
             ],
-        ], $result->getData());
+        ] !== $result->getData() && [
+            [
+                'ts'               => gmdate('Y-m-d\TH:i:s', (int) ($time1 / 1000)) . 'Z',
+                'voltage'          => 1.23,
+                'electric_current' => 4.56,
+            ],
+        ] !== $result->getData())
+        {
+            var_dump($result->getData());
+            $this->assertTrue(false);
+        }
         $result = $client->sql('select * from device.device_batch_insert_2 order by time desc limit 1');
-        $this->assertEquals([
+        if ([
             [
                 'time'             => $time2,
                 'voltage'          => 1.1,
                 'electric_current' => 2.2,
             ],
-        ], $result->getData());
+        ] !== $result->getData() && [
+            [
+                'ts'               => gmdate('Y-m-d\TH:i:s', (int) ($time2 / 1000)) . 'Z',
+                'voltage'          => 1.1,
+                'electric_current' => 2.2,
+            ],
+        ] !== $result->getData())
+        {
+            var_dump($result->getData());
+            $this->assertTrue(false);
+        }
 
         $this->assertTrue(true);
     }

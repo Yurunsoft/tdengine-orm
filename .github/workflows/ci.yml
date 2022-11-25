@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [7.1, 7.2, 7.3]
-        tdengine: ['2.3.6.0']
+        tdengine: ["3.0.0.1"]
 
     env:
       TDENGINE_VERSION: ${{ matrix.tdengine }}
@@ -44,9 +44,57 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [7.4, '8.0', 8.1]
-        swoole: ['4.8.4']
-        tdengine: ['2.3.6.0']
+        php: [7.4, "8.0", 8.1]
+        swoole: ["4.8.12"]
+        tdengine: ["3.0.0.1"]
+        tdengine-extension: [1.0.5]
+
+    env:
+      TDENGINE_VERSION: ${{ matrix.tdengine }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build TDengine
+        run: sudo -E bash .github/script/build-tdengine.sh
+
+      - name: Get Openssl Dir
+        id: opecssl-dir
+        run: echo "::set-output name=path::$(brew --prefix openssl@1.1)"
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: pecl
+          extensions: >
+            :xdebug
+            openssl, mbstring, json, sockets,
+            swoole-swoole/swoole-src@v${{ matrix.swoole }},
+            tdengine-https://github.com/Yurunsoft/php-tdengine@v${{ matrix.tdengine-extension }},
+        env:
+          SWOOLE_CONFIGURE_OPTS: >
+            --enable-openssl
+            --with-openssl-dir=${{ steps.opecssl-dir.outputs.path }}
+          TDENGINE_CONFIGURE_OPTS: >
+            --enable-swoole
+
+      - name: Prepare
+        run: composer update
+
+      - name: Test
+        run: composer test
+
+  test-tdengine:
+    name: PHP-${{ matrix.php }} TDengine-${{ matrix.tdengine }} Swoole-${{ matrix.swoole }}
+    runs-on: ubuntu-20.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [7.4, "8.0", 8.1]
+        swoole: ["4.8.4"]
+        tdengine: ["2.3.6.0"]
         tdengine-extension: [0.0.1]
 
     env:
