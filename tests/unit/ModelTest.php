@@ -148,7 +148,7 @@ class ModelTest extends TestCase
             ],
         ] !== $result->getData() && [
             [
-                'time'             => gmdate('Y-m-d H:i:s.', (int) ($time2 / 1000)) . substr((string) $time2, -3, 3) ,
+                'time'             => gmdate('Y-m-d H:i:s.', (int) ($time2 / 1000)) . substr((string) $time2, -3, 3),
                 'voltage'          => 1.1,
                 'electric_current' => 2.2,
             ],
