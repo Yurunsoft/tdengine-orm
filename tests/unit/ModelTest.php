@@ -71,6 +71,12 @@ class ModelTest extends TestCase
                 'voltage'          => 1.23,
                 'electric_current' => 4.56,
             ],
+        ] !== $result->getData() && [
+            [
+                'time'             => gmdate('Y-m-d H:i:s.', (int) ($time / 1000)) . substr((string) $time, -3, 3),
+                'voltage'          => 1.23,
+                'electric_current' => 4.56,
+            ],
         ] !== $result->getData())
         {
             var_dump($result->getData());
@@ -116,6 +122,12 @@ class ModelTest extends TestCase
                 'voltage'          => 1.23,
                 'electric_current' => 4.56,
             ],
+        ] !== $result->getData() && [
+            [
+                'time'             => gmdate('Y-m-d H:i:s.', (int) ($time1 / 1000)) . substr((string) $time1, -3, 3),
+                'voltage'          => 1.23,
+                'electric_current' => 4.56,
+            ],
         ] !== $result->getData())
         {
             var_dump($result->getData());
@@ -131,6 +143,12 @@ class ModelTest extends TestCase
         ] !== $result->getData() && [
             [
                 'time'             => gmdate('Y-m-d\TH:i:s.', (int) ($time2 / 1000)) . substr((string) $time2, -3, 3) . 'Z',
+                'voltage'          => 1.1,
+                'electric_current' => 2.2,
+            ],
+        ] !== $result->getData() && [
+            [
+                'time'             => gmdate('Y-m-d H:i:s.', (int) ($time2 / 1000)) . substr((string) $time2, -3, 3) ,
                 'voltage'          => 1.1,
                 'electric_current' => 2.2,
             ],
